@@ -52,7 +52,7 @@ celery = make_celery(app)
 
 
 @cache.memoize(timeout=86400)
-def google_translate(text, to):
+def google_translate(text, from_, to):
     r = requests.get(
         'https://translate.googleapis.com/translate_a/single?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to,
                                                                                                       urllib.parse.quote_plus(
