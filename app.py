@@ -4,6 +4,7 @@ from celery import Celery
 from flask import Flask, request
 from flask.ext.cache import Cache
 import requests
+import urllib.parse
 
 
 def make_celery(app):
@@ -51,16 +52,12 @@ celery = make_celery(app)
 
 
 @cache.memoize(timeout=86400)
-def google_translate(text, from_, to):
-    return requests.get(
-        'https://www.googleapis.com/language/translate/v2',
-        params=dict(
-            format='text',
-            key=os.environ['GOOGLE_API_KEY'],
-            q=text,
-            source=from_, target=to
-        )
-    ).json()['data']['translations'][0]['translatedText']
+def google_translate(text, to):
+    r = requests.get(
+        'https://translate.googleapis.com/translate_a/single?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to,
+                                                                                                      urllib.parse.quote_plus(
+                                                                                                          text))).json()
+    return r[0][0][0]
 
 
 @cache.memoize(timeout=86400)
@@ -96,7 +93,7 @@ def get_user(user_id):
     return requests.get(
         'https://slack.com/api/users.info',
         params=dict(
-            token=os.environ['SLACK_API_TOKEN'],
+            token=['SLACK_API_TOKEN'],
             user=user_id
         )
     ).json()['user']
@@ -109,13 +106,13 @@ def translate_and_send(user_id, user_name, channel_name, text, from_, to):
 
     for txt in (text, translated):
         response = requests.post(
-            os.environ['SLACK_WEBHOOK_URL'],
+            'SLACK_WEBHOOK_URL',
             json={
                 "username": user_name,
                 "text": txt,
                 "mrkdwn": True,
                 "parse": "full",
-                "channel": '#'+channel_name,
+                "channel": '#' + channel_name,
                 "icon_url": user['profile']['image_72']
             }
         )
