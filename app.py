@@ -103,20 +103,22 @@ def get_user(user_id):
 def translate_and_send(user_id, user_name, channel_id, text, from_, to):
     translated = google_translate(text, from_, to)
     user = get_user(user_id)
-
-    for txt in (text, translated):
-        response = requests.post(
-            os.environ['SLACK_WEBHOOK_URL'],
-            json={
-                "username": user['real_name'],
-                "text": txt,
-                "mrkdwn": True,
-                "parse": "full",
-                "channel": channel_id,
-                "icon_url": user['image_72']
-            }
-        )
-    return response.text
+    try:
+        for txt in (text, translated):
+            response = requests.post(
+                os.environ['SLACK_WEBHOOK_URL'],
+                json={
+                    "username": user['real_name'],
+                    "text": txt,
+                    "mrkdwn": True,
+                    "parse": "full",
+                    "channel": channel_id,
+                    "icon_url": user['image_72']
+                }
+            )
+        return response.text
+    except Exception as e:
+        post_to_slack(str(e))
 
 
 @app.route('/<string:from_>/<string:to>', methods=['GET', 'POST'])
@@ -130,6 +132,15 @@ def index(from_, to):
         to
     )
     return 'ok'
+
+
+def post_to_slack(payload):
+    profile = "https://slack.com/api/chat.postMessage?token=" + os.environ['SLACK_API_TOKEN'] + "&channel=log" + \
+              "&as_user=false&username=translator&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2017-03-13/154163625846_fe225d81e1fa60da44cf.jpg" \
+              + "&text=" + urllib.parse.quote(str(payload))
+
+    headers1 = {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8", "Accept": "text/plain"}
+    requests.post(profile, headers=headers1)
 
 
 if __name__ == '__main__':
