@@ -120,8 +120,7 @@ def translate_and_send(user_id, user_name, channel_id, text, from_, to):
         return response.text
     except Exception as e:
         post_to_slack(str(e))
-        post_to_slack(user)
-        post_to_slack(user['profile']['image_72'])
+        post_to_slack(text)
 
 
 @app.route('/<string:from_>/<string:to>', methods=['GET', 'POST'])
