@@ -102,18 +102,18 @@ def get_user(user_id):
 @celery.task()
 def translate_and_send(user_id, user_name, channel_id, text, from_, to):
     translated = google_translate(text, from_, to)
-    real_name = get_user(user_id)
+    user = get_user(user_id)
 
     for txt in (text, translated):
         response = requests.post(
             os.environ['SLACK_WEBHOOK_URL'],
             json={
-                "username": real_name,
+                "username": user['real_name'],
                 "text": txt,
                 "mrkdwn": True,
                 "parse": "full",
                 "channel": channel_id,
-                "icon_url": user_name['profile']['image_72']
+                "icon_url": user['image_72']
             }
         )
     return response.text
@@ -129,7 +129,7 @@ def index(from_, to):
         from_,
         to
     )
-    #return 'ok'
+    return 'ok'
 
 
 if __name__ == '__main__':
