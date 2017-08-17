@@ -55,7 +55,7 @@ celery = make_celery(app)
 def google_translate(text, from_, to):
     r = requests.get(
         'https://translate.googleapis.com/translate_a/single?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to,
-                                                                                                      urllib.parse.quote_plus(
+                                                                                                      urllib.parse.quote(
                                                                                                           text))).json()
     return r[0][0][0]
 
