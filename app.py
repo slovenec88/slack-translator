@@ -91,29 +91,29 @@ assert callable(translate)
 @cache.memoize(timeout=86400)
 def get_user(user_id):
     return requests.get(
-        'https://slack.com/api/users.info',
+        'https://slack.com/api/users.profile.get',
         params=dict(
             token=os.environ['SLACK_API_TOKEN'],
             user=user_id
         )
-    ).json()['user']
+    ).json()['profile']['real_name']
 
 
 @celery.task()
 def translate_and_send(user_id, user_name, channel_id, text, from_, to):
     translated = google_translate(text, from_, to)
-    user = get_user(user_id)
+    real_name = get_user(user_id)
 
     for txt in (text, translated):
         response = requests.post(
             os.environ['SLACK_WEBHOOK_URL'],
             json={
-                "username": user_name,
+                "username": real_name,
                 "text": txt,
                 "mrkdwn": True,
                 "parse": "full",
                 "channel": channel_id,
-                "icon_url": user['profile']['image_72']
+                "icon_url": user_name['profile']['image_72']
             }
         )
     return response.text
@@ -129,7 +129,7 @@ def index(from_, to):
         from_,
         to
     )
-    return 'ok'
+    #return 'ok'
 
 
 if __name__ == '__main__':
