@@ -121,7 +121,7 @@ def index(from_, to):
 
 
 def post_to_slack(payload):
-    profile = "https://slack.com/api/chat.postMessage?token=" + os.environ['SLACK_API_TOKEN'] + "&channel=log" + \
+    profile = "https://slack.com/api/chat.postMessage?token=" + os.environ['SLACK_API_TOKEN'] + "&channel=test123" + \
               "&as_user=false&username=translator&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2017-03-13/154163625846_fe225d81e1fa60da44cf.jpg" \
               + "&text=" + urllib.parse.quote(str(payload))
 
