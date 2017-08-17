@@ -96,7 +96,7 @@ def get_user(user_id):
             token=os.environ['SLACK_API_TOKEN'],
             user=user_id
         )
-    ).json()['profile']
+    ).json()
 
 
 @celery.task()
@@ -108,19 +108,19 @@ def translate_and_send(user_id, user_name, channel_id, text, from_, to):
             response = requests.post(
                 os.environ['SLACK_WEBHOOK_URL'],
                 json={
-                    "username": user['real_name'],
+                    "username": user['profile']['real_name'],
                     "text": txt,
                     "mrkdwn": True,
                     "parse": "full",
                     "channel": channel_id,
-                    "icon_url": user['image_72']
+                    "icon_url": user['profile']['image_72']
                 }
             )
         return response.text
     except Exception as e:
         post_to_slack(str(e))
         post_to_slack(user)
-        post_to_slack(user['image_72'])
+        post_to_slack(user['profile']['image_72'])
 
 
 @app.route('/<string:from_>/<string:to>', methods=['GET', 'POST'])
