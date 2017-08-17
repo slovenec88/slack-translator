@@ -59,7 +59,7 @@ def google_translate1(text, from_, to):
             'https://translate.googleapis.com/translate_a/single?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to,
                                                                                                           text),
             headers=headers).json()
-        return r[0][0][0]
+        return r[0]
     except Exception as e:
         post_to_slack(e)
 
@@ -93,7 +93,7 @@ def translate_and_send(user_id, user_name, channel_id, text, from_, to):
     user = get_user(user_id)
     translation = ''
     for txt in translated:
-        translation = translation + txt
+        translation = translation + txt[0]
     try:
         response = requests.post(
             os.environ['SLACK_WEBHOOK_URL'],
