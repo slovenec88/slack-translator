@@ -93,7 +93,7 @@ def get_user(user_id):
     return requests.get(
         'https://slack.com/api/users.info',
         params=dict(
-            token=['SLACK_API_TOKEN'],
+            token=os.environ['SLACK_API_TOKEN'],
             user=user_id
         )
     ).json()['user']
@@ -101,12 +101,12 @@ def get_user(user_id):
 
 @celery.task()
 def translate_and_send(user_id, user_name, channel_name, text, from_, to):
-    translated = translate(text, from_, to)
+    translated = google_translate(text, from_, to)
     user = get_user(user_id)
 
     for txt in (text, translated):
         response = requests.post(
-            'SLACK_WEBHOOK_URL',
+            os.environ['SLACK_WEBHOOK_URL'],
             json={
                 "username": user_name,
                 "text": txt,
