@@ -96,7 +96,7 @@ def get_user(user_id):
             token=os.environ['SLACK_API_TOKEN'],
             user=user_id
         )
-    ).json()['profile']['real_name']
+    ).json()['profile']
 
 
 @celery.task()
