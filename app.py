@@ -112,7 +112,7 @@ def translate_and_send(user_id, user_name, channel_name, text, from_, to):
                 "text": txt,
                 "mrkdwn": True,
                 "parse": "full",
-                "channel": '#' + channel_name,
+                "channel": channel_name,
                 "icon_url": user['profile']['image_72']
             }
         )
