@@ -55,24 +55,8 @@ celery = make_celery(app)
 def google_translate(text, from_, to):
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; Google-Apps-Script)', 'Accept-Encoding': 'gzip,deflate,br'}
     r = requests.get(
-        'https://translate.googleapis.com/translate_a/single?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to, text), headers=headers).json()
+        'http://5e7b1477.ngrok.io?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to, text), headers=headers).json()
     return r[0][0][0]
-
-
-@cache.memoize(timeout=86400)
-def naver_translate(text, from_, to):
-    response = requests.post(
-        'https://openapi.naver.com/v1/language/translate',
-        data=dict(
-            text=text,
-            source=from_, target=to
-        ),
-        headers={
-            'X-Naver-Client-Id': os.environ['NAVER_CLIENT_ID'],
-            'X-Naver-Client-Secret': os.environ['NAVER_CLIENT_SECRET']
-        }
-    )
-    return response.json()['message']['result']['translatedText']
 
 
 translate_engine = os.environ.get('TRANSLATE_ENGINE', 'google')
@@ -133,7 +117,7 @@ def index(from_, to):
         from_,
         to
     )
-    return ('ok')
+    return ('translating...')
 
 
 def post_to_slack(payload):
