@@ -106,7 +106,7 @@ def translate_and_send(user_id, user_name, channel_id, text, from_, to):
     post_to_slack(text)
     post_to_slack(text.decode('utf-8'))
     translated = google_translate(text, from_, to)
-    post_to_slack(translated)
+    post_to_slack(translated.decode('utf-8'))
     user = get_user(user_id)
     try:
         for txt in (text, translated):
