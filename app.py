@@ -52,7 +52,7 @@ celery = make_celery(app)
 
 
 @cache.memoize(timeout=86400)
-def google_translate1(text, from_, to):
+def google_translate2(text, from_, to):
     try:
         headers = {'User-Agent': 'Mozilla/5.0 (compatible; Google-Apps-Script)', 'Accept-Encoding': 'gzip,deflate,br'}
         r = requests.get(
@@ -71,7 +71,7 @@ def google_translate1(text, from_, to):
 
 translate_engine = os.environ.get('TRANSLATE_ENGINE', 'google')
 try:
-    translate = globals()[translate_engine + '_translate1']
+    translate = globals()[translate_engine + '_translate2']
 except KeyError:
     raise RuntimeError(
         'TRANSLATE_ENGINE: there is no {0!r} translate engine'.format(
@@ -94,7 +94,7 @@ def get_user(user_id):
 
 @celery.task()
 def translate_and_send(user_id, user_name, channel_id, text, from_, to):
-    translated = google_translate1(text, from_, to)
+    translated = google_translate2(text, from_, to)
     user = get_user(user_id)
     try:
         response = requests.post(
