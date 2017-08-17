@@ -65,7 +65,7 @@ def google_translate1(text, from_, to):
         headers = {'User-Agent': 'Mozilla/5.0 (compatible; Google-Apps-Script)', 'Accept-Encoding': 'gzip,deflate,br'}
         r = requests.get(
             'https://eafc9936.ngrok.io?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to, text), headers=headers).json()
-        return r[0][0][0]
+        return r
     except Exception as e:
         post_to_slack(e)
 
@@ -132,7 +132,7 @@ def index(from_, to):
 
 
 def post_to_slack(payload):
-    profile = "https://slack.com/api/chat.postMessage?token=" + os.environ['SLACK_API_TOKEN'] + "&channel=test123" + \
+    profile = "https://slack.com/api/chat.postMessage?token=" + os.environ['SLACK_API_TOKEN'] + "&channel=log" + \
               "&as_user=false&username=translator&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2017-03-13/154163625846_fe225d81e1fa60da44cf.jpg" \
               + "&text=" + urllib.parse.quote(str(payload))
 
