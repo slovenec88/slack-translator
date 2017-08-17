@@ -103,8 +103,6 @@ def get_user(user_id):
 def translate_and_send(user_id, user_name, channel_id, text, from_, to):
     translated = google_translate(text, from_, to)
     user = get_user(user_id)
-    post_to_slack(user)
-    post_to_slack(user['image_72'])
     try:
         for txt in (text, translated):
             response = requests.post(
@@ -122,6 +120,7 @@ def translate_and_send(user_id, user_name, channel_id, text, from_, to):
     except Exception as e:
         post_to_slack(str(e))
         post_to_slack(user)
+        post_to_slack(user['image_72'])
 
 
 @app.route('/<string:from_>/<string:to>', methods=['GET', 'POST'])
