@@ -101,7 +101,10 @@ def get_user(user_id):
 
 @celery.task()
 def translate_and_send(user_id, user_name, channel_id, text, from_, to):
+    post_to_slack(text)
     text = text.encode('utf-8')
+    post_to_slack(text)
+    post_to_slack(text.decode('utf-8'))
     translated = google_translate(text, from_, to)
     post_to_slack(translated)
     user = get_user(user_id)
