@@ -59,7 +59,7 @@ def google_translate1(text, from_, to):
             'https://translate.googleapis.com/translate_a/single?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to,
                                                                                                           text),
             headers=headers).json()
-        post_to_slack(r)
+        post_to_slack(str(r))
         return r[0]
     except Exception as e:
         post_to_slack(e)
@@ -92,23 +92,22 @@ def get_user(user_id):
 def translate_and_send(user_id, user_name, channel_id, text, from_, to):
     translated = google_translate1(text, from_, to)
     user = get_user(user_id)
-    translation = ''
-    for txt in translated:
-        translation = translation + txt[0]
+    translation = text + '\n'
+    for txt1 in translated:
+        translation = translation + txt1[0]
 
     try:
-        for txt in (text, translated):
-            response = requests.post(
-                os.environ['SLACK_WEBHOOK_URL'],
-                json={
-                    "username": user['profile']['real_name'],
-                    "text": translation,
-                    "mrkdwn": True,
-                    "parse": "full",
-                    "channel": channel_id,
-                    "icon_url": user['profile']['image_72']
-                }
-            )
+        response = requests.post(
+            os.environ['SLACK_WEBHOOK_URL'],
+            json={
+                "username": user['profile']['real_name'],
+                "text": translation,
+                "mrkdwn": True,
+                "parse": "full",
+                "channel": channel_id,
+                "icon_url": user['profile']['image_72']
+            }
+        )
         return response.text
     except Exception as e:
         post_to_slack(str(e))
