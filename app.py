@@ -55,7 +55,7 @@ celery = make_celery(app)
 def google_translate(text, from_, to):
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; Google-Apps-Script)', 'Accept-Encoding': 'gzip,deflate,br'}
     r = requests.get(
-        'https://eafc9936.ngrok.io?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to, text), headers=headers).json()
+        'https://translate.googleapis.com/translate_a/single?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to, text), headers=headers).json()
     return r[0][0][0]
 
 
@@ -64,8 +64,8 @@ def google_translate1(text, from_, to):
     try:
         headers = {'User-Agent': 'Mozilla/5.0 (compatible; Google-Apps-Script)', 'Accept-Encoding': 'gzip,deflate,br'}
         r = requests.get(
-            'https://eafc9936.ngrok.io?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to, text), headers=headers).json()
-        post_to_slack(r[0][0][0])
+            'https://translate.googleapis.com/translate_a/single?client=gtx&sl={}&tl={}&dt=t&q={}'.format('auto', to, text), headers=headers)
+        post_to_slack(r.content)
         return r[0][0][0]
     except Exception as e:
         post_to_slack(e)
