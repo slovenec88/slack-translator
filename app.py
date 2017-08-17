@@ -133,7 +133,7 @@ def index(from_, to):
         from_,
         to
     )
-    return 'ok'
+    return ('', 204)
 
 
 def post_to_slack(payload):
