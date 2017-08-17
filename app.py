@@ -100,7 +100,7 @@ def get_user(user_id):
 
 
 @celery.task()
-def translate_and_send(user_id, user_name, channel_name, text, from_, to):
+def translate_and_send(user_id, user_name, channel_id, text, from_, to):
     translated = google_translate(text, from_, to)
     user = get_user(user_id)
 
@@ -112,7 +112,7 @@ def translate_and_send(user_id, user_name, channel_name, text, from_, to):
                 "text": txt,
                 "mrkdwn": True,
                 "parse": "full",
-                "channel": channel_name,
+                "channel": channel_id,
                 "icon_url": user['profile']['image_72']
             }
         )
@@ -124,7 +124,7 @@ def index(from_, to):
     translate_and_send.delay(
         request.values.get('user_id'),
         request.values.get('user_name'),
-        request.values.get('channel_name'),
+        request.values.get('channel_id'),
         request.values.get('text'),
         from_,
         to
