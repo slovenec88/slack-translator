@@ -94,18 +94,20 @@ def translate_and_send(user_id, user_name, channel_id, text, from_, to):
     translation = ''
     for txt in translated:
         translation = translation + txt[0]
+    post_to_slack(translated)
     try:
-        response = requests.post(
-            os.environ['SLACK_WEBHOOK_URL'],
-            json={
-                "username": user['profile']['real_name'],
-                "text": translation,
-                "mrkdwn": True,
-                "parse": "full",
-                "channel": channel_id,
-                "icon_url": user['profile']['image_72']
-            }
-        )
+        for txt in (text, translated):
+            response = requests.post(
+                os.environ['SLACK_WEBHOOK_URL'],
+                json={
+                    "username": user['profile']['real_name'],
+                    "text": translation,
+                    "mrkdwn": True,
+                    "parse": "full",
+                    "channel": channel_id,
+                    "icon_url": user['profile']['image_72']
+                }
+            )
         return response.text
     except Exception as e:
         post_to_slack(str(e))
