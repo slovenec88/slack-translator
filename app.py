@@ -5,6 +5,7 @@ from flask import Flask, request
 from flask.ext.cache import Cache
 import requests
 import urllib.parse
+import json
 
 
 def make_celery(app):
@@ -124,7 +125,7 @@ def index(from_, to):
         from_,
         to
     )
-    return (200)
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
 
 def post_to_slack(payload):
