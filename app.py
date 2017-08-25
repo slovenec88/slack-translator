@@ -125,7 +125,7 @@ def index(from_, to):
         from_,
         to
     )
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+    return ('', 204)
 
 
 def post_to_slack(payload):
