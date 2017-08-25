@@ -124,7 +124,7 @@ def index(from_, to):
         from_,
         to
     )
-    return ('translating...')
+    return (200)
 
 
 def post_to_slack(payload):
